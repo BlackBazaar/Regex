@@ -1,0 +1,440 @@
+import java.util.ArrayList;
+
+public class Main {
+
+    public static boolean paragraph_contains(String [] paragraph_arr,ArrayList<String> last_arr){
+        last_arr.add(" ");
+        ArrayList<String> check_word = new ArrayList<String>();
+        for (int i = 0;i <last_arr.size();i++){
+            if (last_arr.get(i).equals(" ")){
+                for (int j = 0;j< paragraph_arr.length;j++){
+                    for (int k = 0;k < check_word.size();k++){
+                        if (!(check_word.get(k).equals(paragraph_arr[j+k]))){
+                            break;
+                        }
+                        if (k == check_word.size()-1){
+                            return true;
+                        }
+                    }
+                }
+                check_word.clear();
+                continue;
+            }
+            check_word.add(last_arr.get(i));
+        }
+        return false;
+    }
+
+    public static void regex_parentheses(String [] regex_arr , ArrayList<String> last_arr) {
+
+        ArrayList<String> before_paranthases = new ArrayList<>();
+        ArrayList<String> after_parenthases = new ArrayList<>();
+        ArrayList<String> onhold = new ArrayList<>();
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("(")){
+                break;
+            }
+            before_paranthases.add(regex_arr[i]);
+        }
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals(")")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    after_parenthases.add(regex_arr[j]);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0; i < regex_arr.length;i++){
+            if (regex_arr[i].equals("(")){
+                for (int j = i+1;j< regex_arr.length;j++){
+                    if (regex_arr[j].equals("|") || regex_arr[j].equals(")")){
+                        for (int k = 0;k<before_paranthases.size();k++){
+                            last_arr.add(before_paranthases.get(k));
+                        }
+                        for (int k = 0;k< onhold.size();k++){
+                            last_arr.add(onhold.get(k));
+                        }
+                        for (int k = 0;k<after_parenthases.size();k++){
+                            last_arr.add(after_parenthases.get(k));
+                        }
+                        last_arr.add(" ");
+                        onhold.clear();
+                        continue;
+                    }
+                    onhold.add(regex_arr[j]);
+                }
+            }
+        }
+
+    }
+
+    public static void regex_brackets(String [] regex_arr , ArrayList<String> last_arr) {
+
+        ArrayList<String> before_brackets = new ArrayList<>();
+        ArrayList<String> after_brackets= new ArrayList<>();
+        ArrayList<String> onhold = new ArrayList<>();
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("[")){
+                break;
+            }
+            before_brackets.add(regex_arr[i]);
+        }
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("]")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    after_brackets.add(regex_arr[j]);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0; i < regex_arr.length;i++){
+            if (regex_arr[i].equals("[")){
+                for (int j = i+1;j< regex_arr.length;j++){
+                        if (regex_arr[j].equals("]")){
+                            last_arr.add(" ");
+                            onhold.clear();
+                            break;
+                        }
+                        onhold.add(regex_arr[j]);
+                        for (int k = 0;k<before_brackets.size();k++){
+                            last_arr.add(before_brackets.get(k));
+                        }
+                        for (int k = 0;k< onhold.size();k++){
+                            last_arr.add(onhold.get(k));
+                        }
+                        for (int k = 0;k<after_brackets.size();k++){
+                            last_arr.add(after_brackets.get(k));
+                        }
+                        last_arr.add(" ");
+                        onhold.clear();
+                }
+            }
+        }
+
+    }
+    public static void regex_questionmark(String [] regex_arr , ArrayList<String> last_arr) {
+        for (int i = 0;i<regex_arr.length;i++){
+            if (regex_arr[i].equals("?")){
+                continue;
+            }
+            last_arr.add(regex_arr[i]);
+        }
+        last_arr.add(" ");
+        for (int i = 0;i< regex_arr.length;i++){
+            if (i == regex_arr.length-1){
+                break;
+            }
+            if (regex_arr[i+1].equals("?") || regex_arr[i].equals("?") ){
+                continue;
+            }
+            last_arr.add(regex_arr[i]);
+        }
+        last_arr.add(" ");
+
+    }
+    public static void regex_star(String [] regex_arr , ArrayList<String> last_arr,int paragraph_length) {
+        ArrayList<String> before_star = new ArrayList<>();
+        ArrayList<String> after_star= new ArrayList<>();
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i+1].equals("*")){
+                break;
+            }
+            before_star.add(regex_arr[i]);
+        }
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("*")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    after_star.add(regex_arr[j]);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0;i<regex_arr.length;i++){
+            if (regex_arr[i].equals("*")){
+                String before_char = regex_arr[i-1];
+                for (int j = 0;j<paragraph_length;j++){
+                    for (int k =0;k<before_star.size();k++){
+                        last_arr.add(before_star.get(k));
+                    }
+                    for (int k = 0;k <j;k++){
+                        last_arr.add(before_char);
+                    }
+                    for (int k =0;k<after_star.size();k++){
+                        last_arr.add(after_star.get(k));
+                    }
+                    last_arr.add(" ");
+
+                }
+            }
+
+        }
+
+    }
+    public static void regex_sum(String [] regex_arr , ArrayList<String> last_arr,int paragraph_length) {
+        ArrayList<String> before_sum = new ArrayList<>();
+        ArrayList<String> after_sum= new ArrayList<>();
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("+")){
+                break;
+            }
+            before_sum.add(regex_arr[i]);
+        }
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("+")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    after_sum.add(regex_arr[j]);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0;i<regex_arr.length;i++){
+            if (regex_arr[i].equals("+")){
+                String before_char = regex_arr[i-1];
+                for (int j = 0;j<paragraph_length;j++){
+                    for (int k =0;k<before_sum.size();k++){
+                        last_arr.add(before_sum.get(k));
+                    }
+                    for (int k = 0;k <j;k++){
+                        last_arr.add(before_char);
+                    }
+                    for (int k =0;k<after_sum.size();k++){
+                        last_arr.add(after_sum.get(k));
+                    }
+                    last_arr.add(" ");
+
+                }
+            }
+
+        }
+
+    }
+    public static void regex_number(String [] regex_arr , ArrayList<String> last_arr) {
+        for (int i =0;i<10;i++){
+            last_arr.add(i+"");
+        }
+
+    }
+    public static void regex_curly(String [] regex_arr , ArrayList<String> last_arr,int paragraph_length) {
+
+        ArrayList<String> before_curly = new ArrayList<>();
+        ArrayList<String> after_curly= new ArrayList<>();
+        int counter = 0;
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("{")){
+                break;
+            }
+            before_curly.add(regex_arr[i]);
+        }
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("}")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    after_curly.add(regex_arr[j]);
+                }
+                break;
+            }
+        }
+
+        for (int i = 0;i<regex_arr.length;i++){
+            if (regex_arr[i].equals("{")){
+                for (int j = i+1;j<regex_arr.length;j++){
+                    if (regex_arr[j].equals("}")){
+                        break;
+                    }
+                    counter++;
+                }
+                break;
+            }
+        }
+        if (counter == 1){
+            String num = "";
+            int num1 = 0;
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    num = regex_arr[i+1];
+                    num1 =  Integer.parseInt(num);
+                }
+            }
+
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    String before_char = regex_arr[i-1];
+
+                        for (int k =0;k<before_curly.size();k++){
+                            last_arr.add(before_curly.get(k));
+                        }
+                        for (int k = 1;k <num1;k++){
+                            last_arr.add(before_char);
+                        }
+                        for (int k =0;k<after_curly.size();k++){
+                            last_arr.add(after_curly.get(k));
+                        }
+                        last_arr.add(" ");
+                }
+            }
+
+
+
+        } else if (counter == 2) {
+            String num = "";
+            int num1 = 0;
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    num = regex_arr[i+1];
+                    num1 =  Integer.parseInt(num);
+                }
+            }
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    String before_char = regex_arr[i-1];
+                    for (int j = 0;j<paragraph_length;j++){
+                        for (int k =0;k<before_curly.size();k++){
+                            last_arr.add(before_curly.get(k));
+                        }
+                        for (int k = 1;k <j + num1;k++){
+                                last_arr.add(before_char);
+                            }
+                        for (int k =0;k<after_curly.size();k++){
+                            last_arr.add(after_curly.get(k));
+                        }
+                        last_arr.add(" ");
+                    }
+                }
+            }
+
+        }else{
+            String num = "";
+            String num21 = "";
+            int num1 = 0;
+            int num2 = 0;
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    num = regex_arr[i+1];
+                    num21 = regex_arr[i+3];
+                    num1 =  Integer.parseInt(num);
+                    num2 = Integer.parseInt(num21);
+                }
+            }
+            for (int i = 0;i<regex_arr.length;i++){
+                if (regex_arr[i].equals("{")){
+                    String before_char = regex_arr[i-1];
+                    for (int j = 0;j<num2-2;j++){
+                        for (int k =0;k<before_curly.size();k++){
+                            last_arr.add(before_curly.get(k));
+                        }
+                        for (int k = 1;k <j + num1;k++){
+                            last_arr.add(before_char);
+                        }
+                        for (int k =0;k<after_curly.size();k++){
+                            last_arr.add(after_curly.get(k));
+                        }
+                        last_arr.add(" ");
+                    }
+                }
+            }
+
+        }
+
+
+    }
+    public static void regex_OR(String [] regex_arr , ArrayList<String> last_arr) {
+
+        ArrayList<String> before_OR = new ArrayList<>();
+        ArrayList<String> after_OR= new ArrayList<>();
+
+        for (int i = 0; i< regex_arr.length;i++){
+            if (regex_arr[i].equals("|")){
+                last_arr.add(" ");
+                for (int j =i+1;j< regex_arr.length;j++){
+                    last_arr.add(regex_arr[j]);
+                }
+                last_arr.add(" ");
+                break;
+            }
+            last_arr.add(regex_arr[i]);
+        }
+    }
+    public static boolean regex_check(String paragraph, String regex, ArrayList<String> last_arr){
+
+
+        String [] paragraph_arr = new String[paragraph.length()];
+        String [] regex_arr  = new String[regex.length()];
+
+        for (int i = 0; i< regex.length(); i++){
+            regex_arr[i] = regex.substring(i,i+1);
+        }
+        for (int i = 0; i< paragraph.length(); i++){
+            paragraph_arr[i] = paragraph.substring(i,i+1);
+        }
+
+        for(int i = 0;i<regex.length();i++){
+            String regex_char = regex_arr[i];
+            if (regex_char.equals("(")){
+                regex_parentheses(regex_arr,last_arr);
+            }
+            if (regex_char.equals("[")){
+                regex_brackets(regex_arr,last_arr);
+            }
+            if(regex_char.equals("?")){
+                regex_questionmark(regex_arr,last_arr);
+            }
+            if (regex_char.equals("*")){
+                regex_star(regex_arr,last_arr,paragraph_arr.length);
+            }
+            if (regex_char.equals("+")){
+                regex_sum(regex_arr,last_arr,paragraph_arr.length);
+            }
+            if (regex_char.equals("{")){
+                regex_curly(regex_arr,last_arr, paragraph_arr.length);
+            }
+            if (regex_char.equals("\\") && regex_arr[i+1].equals("d")){
+                regex_number(regex_arr,last_arr);
+            }
+            if (regex_char.equals("^")){
+                for (int l = 0;l<regex_arr.length;l++){
+                    if (regex_arr[l].equals("^")){
+                        int t = 0;
+                        for (int k = l+1;k<regex_arr.length;k++){
+                            if (!(regex_arr[k].equals(paragraph_arr[t]))){
+                                return false;
+                            }
+                            t++;
+                        }
+                        return true;
+                    }
+
+                }
+            }
+            if (regex_char.equals("|")){
+                regex_OR(regex_arr,last_arr);
+            }
+
+        }
+        for (int i = 0;i<regex_arr.length;i++){
+            last_arr.add(regex_arr[i]);
+        }
+        last_arr.add(" ");
+
+        return paragraph_contains(paragraph_arr,last_arr);
+    }
+    public static void main(String[] args) {
+
+        ArrayList<String> last_arr = new ArrayList<>();
+
+        String paragraph = "hello This text is an examplegray paragraphgrey for test ggle regular 1ahhhhhhhhmet semr expression.";
+
+        String regex = "\\d";
+
+        boolean res =regex_check(paragraph,regex,last_arr);
+        System.out.println(res);
+    }
+}
